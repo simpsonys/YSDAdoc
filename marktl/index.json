@@ -1,7 +1,19 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-16T10:02:28.154Z",
+  "updatedAt": "2026-05-16T13:55:43.287Z",
   "items": [
+    {
+      "slug": "day01-03-강건성-ai-robustness-lecture-analysis",
+      "shortId": "r91y2l",
+      "url": "https://simpsonys.github.io/YSDAdoc/marktl/s/r91y2l/",
+      "canonicalUrl": "https://simpsonys.github.io/YSDAdoc/marktl/day01-03-%EA%B0%95%EA%B1%B4%EC%84%B1-ai-robustness-lecture-analysis/",
+      "sourcePath": "AISpecialist/DAY01-AIEngineering/DAY01-03-강건성-ai_robustness_lecture_analysis.md",
+      "artifactType": "faithful-note",
+      "title": "day01-03-강건성-ai-robustness-lecture-analysis",
+      "excerpt": "AI 품질 — 강건성(Robustness) 강의 분석 노트 1. 한 줄 요약 이번 자료의 핵심은 AI 시스템의 강건성(Robustness)은 정상 입력에서만 잘 맞히는 능력이 아니라, 비정상 입력·외부 간섭·환경 변화·추론 런타임 불안정 속에서도 기능 정확성(Functional Correctness)을 유지하거나 안전하게",
+      "tags": [],
+      "updatedAt": "2026-05-16T13:55:43.287Z"
+    },
     {
       "slug": "project-instruction",
       "shortId": "ipzg6j",
