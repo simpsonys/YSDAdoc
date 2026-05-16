@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-16T09:32:14.685Z",
+  "items": [
+    {
+      "slug": "project-instruction",
+      "shortId": "ipzg6j",
+      "url": "https://simpsonys.github.io/YSDAdoc/marktl/s/ipzg6j/",
+      "canonicalUrl": "https://simpsonys.github.io/YSDAdoc/marktl/project-instruction/",
+      "sourcePath": "AISpecialist/Project Instruction.md",
+      "artifactType": "interactive-explainer",
+      "title": "AI Specialist Lecture Support Instructions",
+      "excerpt": "This project is used to support the user's AI Specialist training program. The user will ask about lecture content, slides, notes, terminology, and practical implications related t",
+      "tags": [],
+      "updatedAt": "2026-05-16T09:32:14.685Z"
+    }
+  ]
+}
