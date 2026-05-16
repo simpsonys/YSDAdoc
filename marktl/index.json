@@ -1,16 +1,28 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-16T13:55:43.287Z",
+  "updatedAt": "2026-05-16T14:11:31.631Z",
   "items": [
     {
-      "slug": "day01-03-강건성-ai-robustness-lecture-analysis",
+      "slug": "ysda-doc-test",
+      "shortId": "1o49vpk",
+      "url": "https://simpsonys.github.io/YSDAdoc/marktl/s/1o49vpk/",
+      "canonicalUrl": "https://simpsonys.github.io/YSDAdoc/marktl/ysda-doc-test/",
+      "sourcePath": "AISpecialist/DAY00-Common/YSDA doc test.md",
+      "artifactType": "interactive-explainer",
+      "title": "ysda-doc-test",
+      "excerpt": "YSDAWAY. Include Myself. By 2030, I am healthy, free, and creatively alive. 나는 건강하고 자유롭게, 내가 원하는 곳에서, 내가 원하는 시간에, 내가 원하는 일을 하며 살아간다. I create because creation brings me back to mys",
+      "tags": [],
+      "updatedAt": "2026-05-16T14:11:31.631Z"
+    },
+    {
+      "slug": "day01-03-ê°ê±´ì±-ai-robustness-lecture-analysis",
       "shortId": "r91y2l",
       "url": "https://simpsonys.github.io/YSDAdoc/marktl/s/r91y2l/",
       "canonicalUrl": "https://simpsonys.github.io/YSDAdoc/marktl/day01-03-%EA%B0%95%EA%B1%B4%EC%84%B1-ai-robustness-lecture-analysis/",
-      "sourcePath": "AISpecialist/DAY01-AIEngineering/DAY01-03-강건성-ai_robustness_lecture_analysis.md",
+      "sourcePath": "AISpecialist/DAY01-AIEngineering/DAY01-03-ê°ê±´ì±-ai_robustness_lecture_analysis.md",
       "artifactType": "faithful-note",
-      "title": "day01-03-강건성-ai-robustness-lecture-analysis",
-      "excerpt": "AI 품질 — 강건성(Robustness) 강의 분석 노트 1. 한 줄 요약 이번 자료의 핵심은 AI 시스템의 강건성(Robustness)은 정상 입력에서만 잘 맞히는 능력이 아니라, 비정상 입력·외부 간섭·환경 변화·추론 런타임 불안정 속에서도 기능 정확성(Functional Correctness)을 유지하거나 안전하게",
+      "title": "day01-03-ê°ê±´ì±-ai-robustness-lecture-analysis",
+      "excerpt": "AI íì§ â ê°ê±´ì±(Robustness) ê°ì ë¶ì ë¸í¸ 1. í ì¤ ìì½ ì´ë² ìë£ì íµì¬ì AI ìì¤íì ê°ê±´ì±(Robustness)ì ì ì ìë ¥ììë§ ì ë§íë ë¥ë ¥ì´ ìëë¼, ë¹ì ì ìë ¥Â·ì¸ë¶ ê°ì­Â·íê²½ ë³íÂ·ì¶ë¡  ë°íì ë¶ìì  ìììë ê¸°ë¥ ì íì±(Functional Correctness)ì ì ì§íê±°ë ìì íê²",
       "tags": [],
       "updatedAt": "2026-05-16T13:55:43.287Z"
     },
