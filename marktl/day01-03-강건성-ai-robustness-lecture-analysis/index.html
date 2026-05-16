@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+
+<title>DAY01-03-강건성-ai_robustness_lecture_analysis</title>
+<style>
+      body { margin: 0; font-family: Georgia, "Times New Roman", serif; color: #202124; background: #faf7f2; }
+      main { max-width: 900px; margin: 0 auto; padding: 56px 36px 80px; box-sizing: border-box; }
+      article { background: #fffdf8; border: 1px solid #e6ddcf; padding: 44px; }
+      h1 { font-size: 44px; line-height: 1.05; margin-top: 0; }
+      h2 { margin-top: 42px; border-top: 1px solid #dfd5c8; padding-top: 24px; }
+      p, li { font-size: 18px; line-height: 1.75; }
+      a { color: #8b3a2b; }
+      pre { overflow: auto; padding: 18px; background: #25211d; color: #f7efe4; border-radius: 6px; }
+      table { width: 100%; border-collapse: collapse; margin: 22px 0; background: #fff; }
+      th, td { border-bottom: 1px solid #e6ddcf; padding: 10px 12px; }
+      img { max-width: 100%; height: auto; display: block; margin: 24px auto; }
+      .frontmatter { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #f1eadf; padding: 14px; color: #5f574f; }
+      .callout { border: 1px solid #d8b98c; background: #fff6e5; padding: 16px 18px; margin: 24px 0; }
+      .callout-title { font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 800; text-transform: uppercase; font-size: 12px; letter-spacing: .08em; }
+    </style>
+<meta property="og:type" content="article">
+<meta property="og:title" content="day01-03-강건성-ai-robustness-lecture-analysis">
+<meta property="og:description" content="AI 품질 — 강건성(Robustness) 강의 분석 노트 1. 한 줄 요약 이번 자료의 핵심은 AI 시스템의 강건성(Robustness)은 정상 입력에서만 잘 맞히는 능력이 아니라, 비정상 입력·외부 간섭·환경 변화·추론 런타임 불안정 속에서도 기능 정확성(Functional Correctness)을 유지하거나 안전하게">
+<meta property="og:url" content="https://simpsonys.github.io/YSDAdoc/marktl/s/r91y2l/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="day01-03-강건성-ai-robustness-lecture-analysis">
+<meta name="twitter:description" content="AI 품질 — 강건성(Robustness) 강의 분석 노트 1. 한 줄 요약 이번 자료의 핵심은 AI 시스템의 강건성(Robustness)은 정상 입력에서만 잘 맞히는 능력이 아니라, 비정상 입력·외부 간섭·환경 변화·추론 런타임 불안정 속에서도 기능 정확성(Functional Correctness)을 유지하거나 안전하게">
+<link rel="canonical" href="https://simpsonys.github.io/YSDAdoc/marktl/s/r91y2l/">
+</head>
+<body>
+<main data-template="editorial">
+<article>
+<h2>AI 품질 — 강건성(Robustness) 강의 분석 노트</h2>
+<h3>1. 한 줄 요약</h3>
+<p>이번 자료의 핵심은 <strong>AI 시스템의 강건성(Robustness)은 정상 입력에서만 잘 맞히는 능력이 아니라, 비정상 입력·외부 간섭·환경 변화·추론 런타임 불안정 속에서도 기능 정확성(Functional Correctness)을 유지하거나 안전하게 실패 처리하는 능력</strong>이라는 점이다.</p>
+<p>Voice Interaction 제품 관점에서는 “조용한 방에서 표준어 명령을 잘 알아듣는가?”가 기능 정확성이라면, “소음·사투리·동승자 대화·네트워크 지연·마이크 결함·지원하지 않는 발화에서도 오인식 없이 적절히 처리하는가?”가 강건성이다.</p>
+<p>---</p>
+<h3>2. 강의 자료의 전체 구조</h3>
+<p>자료는 다음 흐름으로 구성되어 있다.</p>
+<ol><li>강건성 개념</li><li>강건성 유형</li><li>강건성 예시</li><li>강건성 평가 지표</li><li>강건성 QA 시나리오</li><li>강건성 테스트 케이스 설계</li></ol>
+<p>자료는 자율주행 인식 예시가 많지만, 실제로는 Voice Interaction 시스템에도 거의 그대로 적용된다. 특히 ASR(Automatic Speech Recognition), NLU(Natural Language Understanding), Dialogue Manager, LLM(Large Language Model), TTS(Text-to-Speech), on-device/cloud inference 구조를 가진 Bixby류 시스템에서는 강건성이 제품 품질의 핵심 축이다.</p>
+<p>---</p>
+<h3>3. 일반 SW 강건성과 AI SW 강건성의 차이</h3>
+<h4>3.1 일반 SW 강건성</h4>
+<p>일반 소프트웨어에서 강건성은 보통 다음 상황에서 시스템이 죽지 않는 능력을 의미한다.</p>
+<ul><li>잘못된 형식의 데이터</li><li>범위를 벗어난 값</li><li>예외 상황</li><li>메모리 부족</li><li>네트워크 단절</li><li>과도한 트래픽</li></ul>
+<p>즉, 일반 SW에서는 “Crash, Hang, Exception, Data Corruption, Service Unavailable을 피하는 것”이 강건성의 중심이다.</p>
+<h4>3.2 AI SW 강건성</h4>
+<p>AI 시스템에서는 문제가 조금 다르다. 시스템이 죽지 않아도 잘못된 판단을 하면 강건하지 않은 것이다.</p>
+<p>예를 들어 Voice Assistant가 정상적으로 응답은 했지만 사용자의 “TV 꺼줘”를 “TV 켜줘”로 잘못 인식했다면, 소프트웨어는 crash하지 않았지만 AI 기능은 실패한 것이다.</p>
+<p>AI SW 강건성에서는 다음 실패가 중요하다.</p>
+<ul><li>Misclassification: 잘못된 class/intent로 분류</li><li>False Positive: 하지 말아야 할 동작을 실행</li><li>False Negative: 해야 할 동작을 놓침</li><li>Hallucinated Output: 근거 없는 응답 생성</li><li>Confidence Error: 틀렸는데 높은 확신도 출력</li><li>OOD Failure: 운영 범위 밖 입력을 정상 명령처럼 처리</li></ul>
+<p>Voice Interaction Part Leader 관점에서 중요한 차이는 이것이다.</p>
+<p>&gt; 일반 SW QA는 “죽지 않는가”를 많이 본다. AI QA는 “안 죽어도 틀릴 수 있다”를 봐야 한다.</p>
+<p>---</p>
+<h3>4. 강건성 수준: Nominal, Fail-operational, Fail-degraded, Fail-safe</h3>
+<p>자료는 강건성을 여러 수준으로 나눈다.</p>
+<h4>4.1 Nominal robustness</h4>
+<p>정상 또는 약간의 변동 조건에서도 원래 요구된 정확도와 성능 수준을 유지하는 상태다.</p>
+<p>Voice 예시:</p>
+<ul><li>조용한 환경에서 표준어 발화를 정확히 인식</li><li>약간의 생활 소음이 있어도 intent와 slot이 유지됨</li><li>정상 network latency 범위 안에서 응답 지연이 사용자 기대를 넘지 않음</li></ul>
+<h4>4.2 Fail-operational</h4>
+<p>일부 기능이나 구성 요소가 약화되어도 핵심 mission capability는 계속 제공하는 상태다.</p>
+<p>Voice 예시:</p>
+<ul><li>Cloud NLU 장애 시 on-device fallback intent set으로 TV 제어는 계속 가능</li><li>LLM 답변 생성 장애 시 rule-based response로 최소 안내 제공</li><li>멀티 마이크 중 일부가 실패해도 beamforming 품질을 낮춰 인식 지속</li></ul>
+<h4>4.3 Fail-degraded / graceful degradation</h4>
+<p>원래 수준은 아니지만 정의된 degraded 수준 안에서 제한 기능을 계속 제공하는 상태다.</p>
+<p>Voice 예시:</p>
+<ul><li>복잡한 자유 대화는 불가능하지만 “볼륨 올려”, “채널 변경”, “앱 실행” 등 핵심 명령만 유지</li><li>네트워크가 불안정할 때 cloud LLM 기능은 제한하고 local command만 수행</li><li>ASR confidence가 낮을 때 바로 실행하지 않고 “다시 말씀해 주세요”로 전환</li></ul>
+<h4>4.4 Fail-safe</h4>
+<p>강건성보다는 safety에 가깝다. 기능 수행을 중단하고 안전 상태로 전환한다.</p>
+<p>Voice 예시:</p>
+<ul><li>결제, 계정 삭제, 개인정보 노출 가능 명령은 confidence가 낮으면 실행 차단</li><li>음성 명령이 TV 전원/보안/구매 같은 high-risk action에 해당하면 confirmation 요구</li><li>사용자 의도가 불명확하면 “실행하지 않음”이 기본값</li></ul>
+<p>중요한 점은 모든 상황에서 “무조건 동작”하는 것이 좋은 강건성이 아니라는 것이다. 어떤 경우에는 “거부”, “재질문”, “fallback”, “safe stop”이 더 좋은 품질이다.</p>
+<p>---</p>
+<h3>5. AI 시스템 강건성의 4대 위협 요인</h3>
+<p>강의 자료는 AI 강건성을 네 가지 위협 상황으로 설명한다.</p>
+<ol><li>입력 데이터 강건성</li><li>외부 간섭 강건성</li><li>외부 환경 강건성</li><li>추론 런타임 환경 강건성</li></ol>
+<p>Voice Interaction 제품에 맞춰 해석하면 다음과 같다.</p>
+<p>---</p>
+<h2>6. 유형 1 — 입력 데이터 강건성</h2>
+<h3>6.1 한 줄 요약</h3>
+<p>입력 데이터 강건성은 <strong>학습 때 보지 못했거나, 편향되었거나, 공격적이거나, 손상된 입력이 들어와도 모델이 기능 정확성을 유지하거나 안전하게 처리하는 능력</strong>이다.</p>
+<h3>6.2 네 가지 데이터 유형</h3>
+<h4>Unseen / OOD 데이터</h4>
+<p>OOD는 Out-of-Distribution의 약자다. 학습 데이터나 운영 도메인에서 충분히 보지 못한 입력이다.</p>
+<p>Voice 예시:</p>
+<ul><li>지원하지 않는 언어</li><li>희귀 방언</li><li>정의되지 않은 명령 표현</li><li>TV 기능과 무관한 발화</li><li>어린아이의 불명확한 발화</li><li>사용자가 신조어나 은어로 명령</li></ul>
+<p>중요한 요구사항은 “억지로 아는 명령으로 해석하지 않는 것”이다.</p>
+<p>예를 들어 사용자가 TV와 무관한 말을 했는데 이를 “YouTube 실행”으로 오인식하면 위험하다. OOD 입력은 Unknown, unsupported command, clarification request로 빠져야 한다.</p>
+<h4>Biased 데이터</h4>
+<p>Biased 데이터는 모델이 학습 데이터의 shortcut에 과도하게 의존해 잘못 판단할 수 있는 입력이다.</p>
+<p>Voice 예시:</p>
+<ul><li>학습 데이터가 정숙한 환경 중심이라 차량 소음·아이 목소리·TV 소리 속 명령을 못 알아듣는 경우</li><li>특정 성별/연령/억양 화자에게만 높은 정확도를 보이는 경우</li><li>“명령은 항상 가까운 사용자의 또렷한 음성”이라는 가정에 묶이는 경우</li></ul>
+<p>이건 단순 정확도 문제가 아니라 제품 공정성, 사용성, 지역/언어 확장성 문제로 이어진다.</p>
+<h4>Adversarial 데이터</h4>
+<p>Adversarial 데이터는 모델의 취약점을 의도적으로 찌르는 입력이다.</p>
+<p>Voice 예시:</p>
+<ul><li>사람이 잘 못 듣는 초음파/변조 신호로 음성 명령 주입</li><li>스피커로 재생한 은닉 명령</li><li>TV 광고나 영상 속 음성이 Assistant를 깨우는 경우</li><li>Wake word를 흉내 낸 공격성 오디오</li></ul>
+<p>Voice Assistant에서는 보안과 직접 연결된다. 특히 결제, 계정, 개인정보, 기기 제어와 연결되면 단순 품질 이슈가 아니다.</p>
+<h4>Invalid 데이터</h4>
+<p>Invalid 데이터는 데이터의 형식, 신호 품질, 내부 일관성, 시간적 일관성이 깨진 입력이다.</p>
+<p>Voice 예시:</p>
+<ul><li>오디오 frame drop</li><li>sampling rate mismatch</li><li>clipping</li><li>packet loss</li><li>마이크 결함</li><li>echo cancellation 실패</li><li>중간 구간이 잘린 발화</li><li>ASR partial hypothesis 순서 꼬임</li></ul>
+<p>Invalid 데이터는 “입력 자체가 온전하지 않다”는 점이 핵심이다. 이런 경우 모델이 알아서 잘 맞히길 기대하기보다 input validation, signal quality check, fallback 설계가 필요하다.</p>
+<p>---</p>
+<h2>7. 유형 2 — 외부 간섭 강건성</h2>
+<h3>7.1 한 줄 요약</h3>
+<p>외부 간섭 강건성은 <strong>센서, 통신 인터페이스, 데이터 수집 채널을 통해 유입되는 물리적·전자기적·통신적 교란에도 기능 정확성을 유지하거나 교란을 탐지하는 능력</strong>이다.</p>
+<h3>7.2 Voice Interaction 적용</h3>
+<p>자율주행에서는 카메라, LiDAR, GPS, EMI(Electromagnetic Interference) 등이 예시다. Voice에서는 마이크와 오디오 입력 채널이 핵심이다.</p>
+<p>비의도적 간섭 예시:</p>
+<ul><li>TV 자체 스피커 소리</li><li>에어컨/청소기/주방 소음</li><li>다중 화자 대화</li><li>반향이 큰 거실</li><li>Bluetooth 오디오 지연</li><li>네트워크 jitter</li><li>마이크 gain 불안정</li></ul>
+<p>의도적 간섭 예시:</p>
+<ul><li>스피커를 통한 음성 명령 주입</li><li>Wake word replay</li><li>기만적 오디오 sample</li><li>음성 변조 공격</li></ul>
+<p>Voice Interaction Part Leader가 봐야 할 포인트는 “ASR 모델 정확도”만으로 해결되지 않는다는 점이다. Audio front-end, wake word engine, speaker verification, device policy, UX confirmation, cloud/on-device routing이 같이 설계되어야 한다.</p>
+<p>---</p>
+<h2>8. 유형 3 — 외부 환경 강건성</h2>
+<h3>8.1 한 줄 요약</h3>
+<p>외부 환경 강건성은 <strong>운영 환경이 학습 환경과 달라지거나 장기간 사용으로 조건이 변해도 모델의 일반화, 복원력, 신뢰성을 유지하는 능력</strong>이다.</p>
+<h3>8.2 세 가지 저해 환경</h3>
+<h4>Generalization-stressing environment</h4>
+<p>학습 때 충분히 보지 못한 환경 변화다.</p>
+<p>Voice 예시:</p>
+<ul><li>한국 거실 데이터 중심 학습 후 동남아/유럽 가정환경 적용</li><li>TV 음량이 매우 큰 환경</li><li>벽걸이 TV, 사운드바, 외부 스피커 조합</li><li>원거리 발화</li><li>가족 구성원이 동시에 말하는 상황</li></ul>
+<h4>Resilience-stressing environment</h4>
+<p>일부 입력 단서가 손상되어도 남은 정보로 핵심 기능을 유지해야 하는 환경이다.</p>
+<p>Voice 예시:</p>
+<ul><li>마이크 일부 고장</li><li>소음으로 keyword 일부 손실</li><li>네트워크 지연으로 ASR partial result가 늦게 도착</li><li>NLU slot 일부 누락</li></ul>
+<p>이 경우 graceful degradation이 중요하다.</p>
+<p>예를 들어 “넷플릭스에서 ___ 틀어줘”에서 title이 불명확하면 앱 실행까지만 하고 검색어 재질문을 해야 한다.</p>
+<h4>Reliability-stressing environment</h4>
+<p>장기 운영이나 센서/환경 변화로 성능이 점진적으로 저하되는 환경이다.</p>
+<p>Voice 예시:</p>
+<ul><li>마이크 먼지/오염</li><li>장기간 firmware update 이후 audio pipeline 변화</li><li>OS scheduler 변화로 latency 증가</li><li>신규 TV 모델 하드웨어 편차</li><li>새로운 콘텐츠/앱 이름 등장으로 NLU drift 발생</li></ul>
+<p>이건 출시 전 QA만으로 끝나지 않는다. 운영 중 monitoring이 필요하다.</p>
+<p>---</p>
+<h2>9. 유형 4 — 추론 런타임 환경 강건성</h2>
+<h3>9.1 한 줄 요약</h3>
+<p>추론 런타임 환경 강건성은 <strong>모델 자체가 아니라 모델을 감싸는 serving logic, post-processing, runtime, hardware, OS, configuration 변화 때문에 결과가 흔들리지 않게 하는 능력</strong>이다.</p>
+<h3>9.2 추론 로직(Inference Logic)</h3>
+<p>모델 주변의 application layer 문제다.</p>
+<p>Voice 예시:</p>
+<ul><li>ASR confidence threshold가 잘못 설정됨</li><li>NLU fallback priority가 바뀌어 엉뚱한 domain으로 routing</li><li>LLM prompt template 변경으로 답변 정책 변화</li><li>후처리 정규식이 특정 slot을 잘못 삭제</li><li>safety guardrail이 정상 명령까지 과도하게 차단</li><li>locale별 normalization rule 차이</li></ul>
+<p>AI 제품에서 “모델은 그대로인데 결과가 달라졌다”면 대부분 이 계층을 봐야 한다.</p>
+<h3>9.3 추론 플랫폼(Inference Platform)</h3>
+<p>runtime과 infrastructure 문제다.</p>
+<p>Voice 예시:</p>
+<ul><li>TensorRT / ONNX Runtime / NNAPI / vendor NPU runtime 버전 차이</li><li>quantization 변경으로 confidence calibration 악화</li><li>CPU/GPU/NPU resource contention</li><li>OS scheduling으로 streaming ASR latency 증가</li><li>cloud endpoint region 변경으로 P95 latency 증가</li><li>tokenizer 또는 vocabulary 버전 불일치</li></ul>
+<p>Voice 제품에서는 latency가 곧 품질이다. 평균 latency보다 P95/P99 tail latency가 더 중요할 때가 많다. 사용자 입장에서는 “대부분 빠름”보다 “가끔 5초 멈춤”이 더 나쁜 경험이다.</p>
+<p>---</p>
+<h2>10. 기능 정확성 vs 강건성</h2>
+<h3>10.1 핵심 차이</h3>
+<p>기능 정확성은 정상 조건에서 요구된 task를 잘 수행하는가를 본다. 강건성은 비정상·가혹·예상 밖 조건에서도 그 성능을 얼마나 유지하는가를 본다.</p>
+<p>Voice 예시:</p>
+<ul><li>기능 정확성: 조용한 실내에서 “볼륨 올려”를 정확히 인식한다.</li><li>강건성: TV 소리, 아이 목소리, 사투리, 빠른 발화, packet loss가 있어도 intent를 유지하거나 안전하게 재요청한다.</li></ul>
+<p>기능 정확성 QA만 하면 제품은 데모에서는 좋아 보이지만 실제 가정환경에서 무너진다.</p>
+<h3>10.2 FR과 QA의 구분</h3>
+<p>사용자가 이전에 헷갈렸던 지점과 연결하면 다음처럼 정리할 수 있다.</p>
+<ul><li>FR(Functional Requirement): 시스템이 무엇을 해야 하는가</li><li>NFR(Non-Functional Requirement): 어떤 품질 수준으로 해야 하는가</li><li>QA(Quality Assurance): 그 요구사항을 만족하는지 검증하는 활동과 체계</li></ul>
+<p>AI 강건성 항목 중 상당수는 “QA 항목”이라기보다 “품질 요구사항 또는 NFR”에 가깝다. 다만 강의에서는 QA 시나리오 형식으로 요구사항을 검증 가능한 구조로 바꾼 것이다.</p>
+<p>예:</p>
+<ul><li>요구사항: “소음 환경에서도 intent accuracy 하락률은 10% 이내여야 한다.”</li><li>QA 시나리오: 라디오/동승자/송풍기/주행 소음이 섞인 test set으로 측정한다.</li><li>Test case: SNR 5dB, 10dB, 20dB 조건별 “볼륨 올려” 발화 1,000건을 수행한다.</li></ul>
+<p>---</p>
+<h2>11. 강건성 평가 지표</h2>
+<p>자료는 강건성 평가 지표를 크게 세 묶음으로 설명한다.</p>
+<ol><li>정확성 기반 강건성 지표</li><li>적대적 기반 강건성 지표</li><li>안정성 기반 강건성 지표</li></ol>
+<p>---</p>
+<h3>11.1 정확성 기반 강건성 지표</h3>
+<h4>Robustness Score(RS)</h4>
+<p>정상 조건 대비 강건성 조건에서 성능을 얼마나 보존했는지 보는 비율이다.</p>
+<p>예:</p>
+<ul><li>Clean 환경 ASR intent accuracy: 95%</li><li>Noise 환경 ASR intent accuracy: 85%</li><li>RS = 85 / 95 = 89.5%</li></ul>
+<p>이 지표는 “절대 성능”이 아니라 “정상 대비 유지율”을 본다.</p>
+<p>Voice 적용:</p>
+<ul><li>정숙 환경 대비 소음 환경 intent accuracy 유지율</li><li>표준어 대비 방언 발화 slot F1 유지율</li><li>cloud 정상 대비 degraded network 조건 task success 유지율</li></ul>
+<h4>Relative Correctness Degradation(RCD)</h4>
+<p>정상 대비 성능이 얼마나 하락했는지를 본다.</p>
+<p>예:</p>
+<ul><li>Clean accuracy 95%</li><li>Robust condition accuracy 85%</li><li>성능 유지율은 89.5%</li><li>하락률은 약 10.5%</li></ul>
+<p>RCD는 낮을수록 좋다.</p>
+<h4>Condition-wise Robustness Score</h4>
+<p>조건별로 강건성 점수를 쪼개 보는 방식이다.</p>
+<p>Voice에서는 전체 평균보다 조건별 점수가 중요하다.</p>
+<p>예:</p>
+<ul><li>라디오 소음: 92%</li><li>동승자 대화: 75%</li><li>어린이 화자: 68%</li><li>경상도 사투리: 80%</li><li>TV 스피커 echo: 60%</li></ul>
+<p>전체 평균이 좋아도 특정 조건이 낮으면 실제 VOC(Voice of Customer)나 불만으로 이어진다.</p>
+<p>---</p>
+<h3>11.2 적대적 기반 강건성 지표</h3>
+<h4>Attack Success Rate(ASR)</h4>
+<p>ASR은 Attack Success Rate의 약자다. 정상 입력에서는 맞았던 샘플이 공격 후 오답으로 바뀐 비율이다.</p>
+<p>Voice 적용:</p>
+<ul><li>replay attack 성공률</li><li>adversarial audio로 wake word가 오인식되는 비율</li><li>hidden command injection으로 명령 실행되는 비율</li></ul>
+<p>AI 보안 평가에서는 공격자 관점 지표가 필요하다. 단순 “정확도”만 보면 공격 취약성이 보이지 않는다.</p>
+<h4>Attack Detection / Rejection Rate</h4>
+<p>공격 입력을 탐지하거나 차단하는 비율이다.</p>
+<p>Voice 적용:</p>
+<ul><li>스피커 재생 음성을 live human speech와 구분</li><li>abnormal acoustic pattern 탐지</li><li>confidence가 비정상적으로 흔들리는 입력 차단</li><li>wake word 이후 speaker verification 실패 시 high-risk command 차단</li></ul>
+<h4>False Rejection Rate(FRR)</h4>
+<p>FRR은 False Rejection Rate의 약자다. 정상 입력인데 공격 또는 이상 입력으로 잘못 거부한 비율이다.</p>
+<p>중요한 trade-off가 있다.</p>
+<ul><li>공격 차단을 강하게 하면 안전하지만 정상 사용자도 자주 막힌다.</li><li>차단을 약하게 하면 UX는 좋아지지만 공격에 취약해진다.</li></ul>
+<p>Voice Assistant에서는 action risk별로 threshold를 다르게 가져가는 것이 현실적이다.</p>
+<p>예:</p>
+<ul><li>“볼륨 올려”: 낮은 threshold</li><li>“결제해”: 높은 threshold + confirmation</li><li>“계정 삭제”: voice-only 실행 금지 또는 추가 인증</li></ul>
+<p>---</p>
+<h3>11.3 안정성 기반 강건성 지표</h3>
+<h4>Stability Index</h4>
+<p>입력이 조금 흔들릴 때 출력이 얼마나 안정적인지 보는 지표다.</p>
+<p>Voice 적용:</p>
+<ul><li>streaming ASR partial result가 프레임마다 크게 흔들리는지</li><li>intent가 “검색” ↔ “앱 실행” 사이에서 번복되는지</li><li>LLM response policy가 유사 발화에서 과도하게 달라지는지</li></ul>
+<h4>Flicker Rate</h4>
+<p>연속된 입력 또는 유사 입력에서 예측 label이 얼마나 자주 바뀌는지 보는 지표다.</p>
+<p>자율주행에서는 객체 label이 보행자/표지판/차량으로 깜빡이는 문제가 예시다. Voice에서는 다음 현상으로 나타난다.</p>
+<ul><li>ASR partial text가 불안정하게 바뀜</li><li>NLU intent가 매번 다르게 나옴</li><li>동일 명령을 반복했는데 response style이나 action이 달라짐</li><li>multimodal context에서 화면 상태가 조금 바뀌었다고 domain routing이 바뀜</li></ul>
+<p>Voice 제품에서는 이 flicker가 사용자의 신뢰를 크게 떨어뜨린다.</p>
+<p>---</p>
+<h2>12. 강건성 QA 시나리오 구조</h2>
+<p>자료는 강건성 QA 시나리오를 다음 구조로 잡는다.</p>
+<ul><li>Source</li><li>Stimulus</li><li>Artifact</li><li>Environment</li><li>Response</li><li>Response Measure</li></ul>
+<p>이 구조는 매우 실무적이다. Voice Interaction에 적용하면 다음과 같다.</p>
+<h3>예시: TV Voice Command 강건성 QA 시나리오</h3>
+<h4>Source</h4>
+<ul><li>사용자</li><li>TV 마이크</li><li>리모컨 마이크</li><li>외부 스피커</li><li>TV 재생 콘텐츠</li><li>공격자 또는 replay source</li></ul>
+<h4>Stimulus</h4>
+<ul><li>정상 발화</li><li>소음 섞인 발화</li><li>방언 발화</li><li>동승자 대화와 섞인 명령</li><li>지원하지 않는 명령</li><li>clipping된 audio</li><li>replay attack audio</li></ul>
+<h4>Artifact</h4>
+<ul><li>Wake word engine</li><li>ASR engine</li><li>NLU engine</li><li>Dialogue Manager</li><li>LLM response generator</li><li>Policy/guardrail</li><li>TTS</li><li>전체 Bixby voice pipeline</li></ul>
+<h4>Environment</h4>
+<ul><li>정숙한 거실</li><li>TV 음량 높음</li><li>에어컨/청소기 소음</li><li>network poor condition</li><li>cloud inference latency 증가</li><li>on-device resource 부족</li><li>신규 TV 모델 hardware 차이</li></ul>
+<h4>Response</h4>
+<ul><li>올바른 명령 실행</li><li>clarification request</li><li>unsupported command 안내</li><li>input rejection</li><li>degraded mode fallback</li><li>safe stop</li></ul>
+<h4>Response Measure</h4>
+<ul><li>WER(Word Error Rate)</li><li>Intent Accuracy</li><li>Slot F1</li><li>Task Success Rate</li><li>Robustness Score</li><li>RCD(Relative Correctness Degradation)</li><li>P95 latency</li><li>False Accept Rate</li><li>False Reject Rate</li><li>User correction rate</li><li>Regression rate by domain</li></ul>
+<p>---</p>
+<h2>13. 강건성 테스트 데이터 설계</h2>
+<p>자료의 중요한 메시지는 “외부 간섭과 외부 환경의 영향을 결국 입력 데이터 변형으로 투영해서 테스트한다”는 것이다.</p>
+<p>즉, 현실 세계의 소음·날씨·센서 오염·지연·공격을 테스트 데이터로 만들어 모델과 시스템에 넣어 본다.</p>
+<h3>13.1 Unseen / OOD 테스트</h3>
+<h4>Semantic OOD</h4>
+<p>새로운 의미 범주가 들어오는 테스트다.</p>
+<p>Voice 예시:</p>
+<ul><li>TV가 지원하지 않는 기능 요청</li><li>새로 등장한 앱/콘텐츠 이름</li><li>의미 해석 불가능한 말</li><li>외국어 또는 혼합 언어</li></ul>
+<p>검증 목적:</p>
+<ul><li>모르는 것을 모른다고 하는가?</li><li>지원하지 않는 명령을 기존 명령으로 억지 매핑하지 않는가?</li></ul>
+<h4>Domain Shift</h4>
+<p>의미는 같지만 입력 분포가 다른 테스트다.</p>
+<p>Voice 예시:</p>
+<ul><li>동일한 “볼륨 올려” 명령을 정숙/라디오/송풍/고속 주행/아이 소리 배경에서 테스트</li><li>한국어 표준어 중심 학습 후 지역 억양 테스트</li><li>리모컨 마이크와 far-field TV 마이크 차이 테스트</li></ul>
+<p>검증 목적:</p>
+<ul><li>같은 명령 의미가 다른 음향 분포에서도 유지되는가?</li></ul>
+<p>---</p>
+<h3>13.2 Biased 테스트</h3>
+<h4>Cross-context Test</h4>
+<p>객체나 명령 자체는 같지만 배경 맥락을 바꿔 shortcut learning을 드러내는 테스트다.</p>
+<p>Voice 예시:</p>
+<ul><li>동일 명령을 뉴스, 음악, 광고, 동승자 대화 속에서 발화</li><li>“켜줘”가 조명/TV/앱/셋톱박스 맥락에 따라 과도하게 특정 domain으로 bias되는지 확인</li></ul>
+<h4>Counterfactual Test</h4>
+<p>정답 label은 유지하고 비본질적 요인만 바꾸는 테스트다.</p>
+<p>Voice 예시:</p>
+<ul><li>동일 문장, 다른 성별/연령/억양/속도/음량</li><li>동일 intent, 다른 표현 방식</li><li>동일 slot, 다른 배경 소음</li></ul>
+<p>검증 목적:</p>
+<ul><li>모델이 본질적 의미를 보고 판단하는가?</li><li>화자 속성이나 배경음 같은 비본질 요인에 흔들리지 않는가?</li></ul>
+<p>---</p>
+<h3>13.3 Adversarial 테스트</h3>
+<p>Voice에서는 다음 세 가지가 중요하다.</p>
+<ol><li>Digital evasion attack</li><li>Physical attack simulation</li><li>Sensor/channel spoofing</li></ol>
+<p>예시:</p>
+<ul><li>adversarial perturbation을 넣은 audio</li><li>replay attack</li><li>speaker injection</li><li>TV 콘텐츠 내 hidden command</li><li>wake word false activation 공격</li></ul>
+<p>검증 목적:</p>
+<ul><li>공격 후 명령이 실행되는가?</li><li>공격을 탐지하거나 거부하는가?</li><li>정상 사용자를 과도하게 차단하지 않는가?</li></ul>
+<p>---</p>
+<h3>13.4 Invalid 테스트</h3>
+<p>Invalid 테스트는 네 가지로 나누는 것이 좋다.</p>
+<h4>형식적 무결성</h4>
+<ul><li>sample rate 오류</li><li>codec mismatch</li><li>malformed packet</li><li>missing metadata</li><li>language tag 오류</li></ul>
+<h4>신호 품질 / 정보 충분성</h4>
+<ul><li>noise injection</li><li>clipping</li><li>echo</li><li>compression artifact</li><li>dropped audio segment</li></ul>
+<h4>개별 데이터 내부 일관성</h4>
+<ul><li>audio metadata와 실제 audio 불일치</li><li>locale은 ko-KR인데 실제 발화는 영어</li><li>device state와 command context 불일치</li></ul>
+<h4>데이터 간 선후 일관성</h4>
+<ul><li>streaming partial result 순서 꼬임</li><li>frame drop/reordering</li><li>endpointing 타이밍 오류</li><li>previous dialogue state와 current user utterance 불일치</li></ul>
+<p>---</p>
+<h2>14. Voice Interaction Part Leader가 특히 봐야 할 부분</h2>
+<h3>14.1 강건성은 모델팀만의 일이 아니다</h3>
+<p>Voice Interaction 시스템은 pipeline이다.</p>
+<ul><li>Wake word</li><li>Audio front-end</li><li>ASR</li><li>NLU</li><li>Dialogue Manager</li><li>LLM/NLG(Natural Language Generation)</li><li>Policy/Guardrail</li><li>Device control</li><li>TTS</li><li>Client runtime</li><li>Cloud backend</li><li>Monitoring</li></ul>
+<p>강건성 이슈는 어느 한 모델의 accuracy가 아니라 pipeline boundary에서 자주 발생한다.</p>
+<p>예:</p>
+<ul><li>ASR confidence는 낮은데 NLU가 강하게 intent를 찍음</li><li>NLU는 맞았지만 device state가 맞지 않아 실행 실패</li><li>LLM이 가능한 기능처럼 답했지만 실제 TV capability가 없음</li><li>cloud latency로 user가 두 번 말해서 중복 실행</li></ul>
+<p>따라서 Part Leader는 component별 owner만 볼 것이 아니라 end-to-end failure mode를 관리해야 한다.</p>
+<h3>14.2 “정답률”보다 “위험한 오답”을 봐야 한다</h3>
+<p>Voice Assistant에서는 모든 오답이 같은 비용을 갖지 않는다.</p>
+<p>낮은 위험:</p>
+<ul><li>날씨 질문을 못 알아듣고 재질문</li><li>일반 검색 query 오인식</li></ul>
+<p>중간 위험:</p>
+<ul><li>앱을 잘못 실행</li><li>콘텐츠를 잘못 재생</li><li>볼륨을 크게 올림</li></ul>
+<p>높은 위험:</p>
+<ul><li>결제</li><li>개인정보 노출</li><li>계정 변경</li><li>기기 설정 초기화</li><li>보안 카메라/도어락 등 외부 기기 제어</li></ul>
+<p>강건성 QA는 risk-tier별 threshold와 fallback policy를 가져야 한다.</p>
+<h3>14.3 출시 전 QA와 출시 후 Monitoring을 분리하면 안 된다</h3>
+<p>강건성은 운영 중 깨진다.</p>
+<ul><li>신규 앱/콘텐츠 이름 등장</li><li>사용자 발화 트렌드 변화</li><li>TV 모델별 마이크 편차</li><li>OS update</li><li>cloud model update</li><li>prompt template 변경</li><li>locale별 데이터 분포 변화</li></ul>
+<p>따라서 release gate뿐 아니라 production monitoring이 필요하다.</p>
+<p>필수 monitoring 예:</p>
+<ul><li>intent fallback rate</li><li>unsupported command rate</li><li>repeated command rate</li><li>user correction rate</li><li>ASR low confidence rate</li><li>domain routing distribution drift</li><li>P95/P99 latency</li><li>model version별 error spike</li><li>rollback trigger metric</li></ul>
+<h3>14.4 강건성 요구사항은 수치화해야 한다</h3>
+<p>“소음 환경에서도 잘 되어야 한다”는 요구사항이 아니다.</p>
+<p>더 좋은 요구사항:</p>
+<ul><li>정숙 환경 대비 intent accuracy 유지율 90% 이상</li><li>SNR 10dB 조건에서 핵심 TV control task success 85% 이상</li><li>동일 발화 5회 반복 시 intent flicker rate 1% 이하</li><li>P95 end-to-end voice response latency 2.5초 이하</li><li>high-risk command false accept rate 0.01% 이하</li><li>unsupported command의 forced execution rate 0.1% 이하</li></ul>
+<p>강건성은 감각이 아니라 metric과 threshold로 관리해야 한다.</p>
+<p>---</p>
+<h2>15. 실제 제품 개발에서 생길 수 있는 실패 사례</h2>
+<h3>사례 1: 조용한 실험실에서는 잘 되는데 집에서는 안 됨</h3>
+<p>원인:</p>
+<ul><li>학습/검증 데이터가 정숙 환경에 편향</li><li>TV speaker echo와 가족 대화가 반영되지 않음</li><li>far-field microphone condition 부족</li></ul>
+<p>대응:</p>
+<ul><li>cross-context test set 구축</li><li>SNR별 benchmark</li><li>room acoustics별 테스트</li><li>echo cancellation regression test</li></ul>
+<h3>사례 2: 신규 모델 배포 후 특정 명령이 갑자기 오작동</h3>
+<p>원인:</p>
+<ul><li>모델 weights만 바뀐 것이 아니라 tokenizer, threshold, prompt, post-processing도 바뀜</li><li>confidence calibration 변화</li><li>domain routing priority 변화</li></ul>
+<p>대응:</p>
+<ul><li>model deployment artifact를 weights만 보지 말고 tokenizer/config/prompt/post-processing까지 versioning</li><li>canary release</li><li>A/B Testing</li><li>rollback metric 사전 정의</li></ul>
+<h3>사례 3: 모르는 명령을 아는 명령으로 억지 실행</h3>
+<p>원인:</p>
+<ul><li>OOD detection 부재</li><li>fallback intent가 너무 공격적으로 동작</li><li>“무조건 답변/실행” UX 정책</li></ul>
+<p>대응:</p>
+<ul><li>Unknown intent threshold 강화</li><li>unsupported command response 명확화</li><li>high-risk action confirmation</li><li>OOD test set 정례화</li></ul>
+<h3>사례 4: streaming ASR/NLU 결과가 계속 바뀜</h3>
+<p>원인:</p>
+<ul><li>partial hypothesis instability</li><li>endpointing 불안정</li><li>beam search/post-processing 흔들림</li><li>network jitter</li></ul>
+<p>대응:</p>
+<ul><li>stability index / flicker rate 측정</li><li>final result 전 action execution 금지</li><li>incremental UI와 actual execution policy 분리</li></ul>
+<p>---</p>
+<h2>16. 강의 자료를 Voice Interaction 시스템으로 재구성한 테스트 매트릭스</h2>
+<table><thead><tr><th>강건성 유형</th><th>Voice 예시</th><th>주요 Metric</th><th>대응 설계</th></tr></thead><tbody><tr><td>Unseen/OOD</td><td>지원하지 않는 명령, 외국어, 무의미 발화</td><td>OOD detection rate, forced execution rate</td><td>Unknown 처리, 재질문, unsupported 안내</td></tr><tr><td>Biased</td><td>특정 화자/소음/환경에서만 성능 저하</td><td>condition-wise accuracy, fairness slice metric</td><td>cross-context/counterfactual test</td></tr><tr><td>Adversarial</td><td>replay, hidden command, wake word spoofing</td><td>attack success rate, detection rate, FRR</td><td>speaker verification, risk-based confirmation</td></tr><tr><td>Invalid</td><td>frame drop, clipping, packet loss</td><td>invalid rejection rate, task success under corruption</td><td>signal validation, fallback, safe handling</td></tr><tr><td>External interference</td><td>TV echo, 라디오, 동승자 대화</td><td>ASR WER, intent accuracy under noise</td><td>audio front-end 개선, source separation</td></tr><tr><td>External environment</td><td>원거리, 방 크기, 모델별 마이크 차이</td><td>robustness score by device/environment</td><td>device별 calibration, field monitoring</td></tr><tr><td>Runtime</td><td>cloud latency, NPU 차이, config 변경</td><td>P95/P99 latency, version regression</td><td>canary, rollback, config versioning</td></tr></tbody></table>
+<p>---</p>
+<h2>17. 이 강의에서 꼭 가져가야 할 의사결정 포인트</h2>
+<ol><li>강건성은 “정확도 높은 모델”만으로 해결되지 않는다.</li><li>비정상 입력은 억지로 맞히는 것이 아니라 차단·재질문·fallback해야 할 때가 많다.</li><li>AI QA는 평균 accuracy보다 condition-wise metric을 봐야 한다.</li><li>Voice Interaction에서는 소음, 화자 다양성, unsupported command, latency, runtime version 차이가 핵심 강건성 리스크다.</li><li>Model deployment는 software deployment보다 복잡하다. weights, tokenizer, prompt, threshold, feature pipeline, serving runtime, post-processing까지 같이 관리해야 한다.</li><li>강건성 요구사항은 반드시 수치화되어야 한다.</li><li>출시 후 monitoring과 rollback plan 없이는 강건성 품질을 유지할 수 없다.</li></ol>
+<p>---</p>
+<h2>18. 강사에게 할 만한 질문</h2>
+<p>다음 질문은 실무적인 동시에 강의 주제와 잘 맞는다.</p>
+<p>&gt; “강건성 평가에서 OOD 입력을 unknown으로 잘 거부하는 것과, noisy but valid 입력을 끝까지 인식하는 것은 서로 반대 방향의 threshold trade-off가 생깁니다. 실제 AI 시스템 QA에서는 이 둘을 하나의 robustness score로 합치는 것이 좋은지, 아니면 action risk별로 별도 metric과 threshold를 두는 것이 좋은지 궁금합니다.”</p>
+<p>이 질문이 좋은 이유:</p>
+<ul><li>단순 정의 질문이 아니다.</li><li>실제 제품에서 가장 많이 부딪히는 precision/recall, reject/accept trade-off를 건드린다.</li><li>Voice Interaction의 high-risk/low-risk command 정책과 연결된다.</li><li>강사가 이론과 실무 사이를 설명하기 좋다.</li></ul>
+<p>---</p>
+<h2>19. Deep Dive 링크</h2>
+<p>아래는 강의 주제와 직접 연결되는 참고 자료다.</p>
+<ul><li>ISO/IEC 25059:2023 — Software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Quality model for AI systems</li></ul>
+<p>https://www.iso.org/standard/80655.html</p>
+<ul><li>NIST AI Risk Management Framework</li></ul>
+<p>https://www.nist.gov/itl/ai-risk-management-framework</p>
+<ul><li>NIST Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations</li></ul>
+<p>https://csrc.nist.gov/pubs/ai/100/2/e2023/final</p>
+<ul><li>Google ML Test Score — Production ML readiness 관점 참고</li></ul>
+<p>https://research.google/pubs/the-ml-test-score-a-rubric-for-ml-production-readiness-and-technical-debt-reduction/</p>
+<ul><li>Microsoft Responsible AI Standard</li></ul>
+<p>https://www.microsoft.com/en-us/ai/responsible-ai</p>
+<ul><li>Papers with Code — Robustness benchmarks</li></ul>
+<p>https://paperswithcode.com/task/robustness</p>
+<p>---</p>
+<h2>20. 최종 정리</h2>
+<p>이번 강의 자료는 AI 시스템 품질에서 강건성을 “가혹 조건에서도 기능 정확성을 유지하는 능력”으로 설명한다. 일반 SW의 강건성이 crash나 exception 방지에 초점을 둔다면, AI SW의 강건성은 틀린 판단, 과잉 확신, OOD 오인식, 공격 취약성, runtime 변동까지 포함한다.</p>
+<p>Voice Interaction Part Leader 입장에서는 강건성을 다음 질문으로 바꿔서 이해하면 된다.</p>
+<ul><li>조용한 환경이 아니라 실제 거실/차량/소음 환경에서도 되는가?</li><li>모르는 명령을 아는 명령처럼 실행하지 않는가?</li><li>낮은 confidence에서 안전하게 재질문하는가?</li><li>공격성 오디오나 replay에 속지 않는가?</li><li>모델 변경 없이 config/runtime/prompt 변경만으로 regression이 생기지 않는가?</li><li>P95/P99 latency와 fallback rate를 운영 중 감시하고 rollback할 수 있는가?</li></ul>
+<p>결론적으로, 강건성은 AI 모델의 부가 품질이 아니라 실제 제품에서 사용자가 “믿고 쓸 수 있는지”를 결정하는 핵심 품질 속성이다.</p>
+</article>
+</main>
+
+</body>
+</html>
