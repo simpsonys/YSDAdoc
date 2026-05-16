@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YSDAWAY — Include Myself</title>
+<meta name="description" content="A standalone interactive review-room style presentation of the YSDAWAY vision statement.">
+<style>
+  :root {
+    --bg: #f6f1e8;
+    --bg-2: #efe6d8;
+    --paper: rgba(255,255,255,0.78);
+    --paper-strong: rgba(255,255,255,0.9);
+    --ink: #1f1b18;
+    --muted: #6d655e;
+    --line: rgba(31,27,24,0.12);
+    --accent: #0d6b5f;
+    --accent-2: #bf5b32;
+    --accent-3: #b08900;
+    --shadow: 0 18px 48px rgba(43, 31, 18, 0.12);
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --max: 1220px;
+    --font-sans: "Pretendard Variable", "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    --font-serif: "Iowan Old Style", "Book Antiqua", "Palatino Linotype", Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(circle at top left, rgba(13,107,95,0.12), transparent 28%),
+      radial-gradient(circle at top right, rgba(191,91,50,0.1), transparent 24%),
+      linear-gradient(180deg, #f8f4ed 0%, #f1eadf 40%, #ece2d4 100%);
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background: rgba(13,107,95,0.16);
+    color: var(--ink);
+  }
+
+  .page-shell {
+    position: relative;
+    overflow-x: clip;
+  }
+
+  .page-shell::before,
+  .page-shell::after {
+    content: "";
+    position: fixed;
+    inset: auto;
+    width: 42vw;
+    height: 42vw;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    opacity: 0.45;
+    z-index: 0;
+  }
+
+  .page-shell::before {
+    top: -12vw;
+    left: -10vw;
+    background: rgba(13,107,95,0.08);
+  }
+
+  .page-shell::after {
+    bottom: -16vw;
+    right: -12vw;
+    background: rgba(191,91,50,0.08);
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 28px 20px 64px;
+  }
+
+  .topbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .topbar-left,
+  .topbar-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.58);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .button,
+  button {
+    appearance: none;
+    border: 1px solid rgba(31,27,24,0.12);
+    background: rgba(255,255,255,0.82);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 10px 14px;
+    font: inherit;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    box-shadow: 0 8px 22px rgba(43,31,18,0.05);
+  }
+
+  .button:hover,
+  button:hover {
+    transform: translateY(-1px);
+    background: #fff;
+    border-color: rgba(31,27,24,0.2);
+  }
+
+  .button.primary,
+  button.primary {
+    background: linear-gradient(135deg, var(--accent), #115d63);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .button.warm,
+  button.warm {
+    background: linear-gradient(135deg, #c1653d, #a95032);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .hero {
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.5);
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.86), rgba(255,248,241,0.76)),
+      linear-gradient(180deg, rgba(13,107,95,0.06), rgba(191,91,50,0.04));
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow);
+    border-radius: 36px;
+    padding: 36px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -18%;
+    right: -8%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13,107,95,0.16), transparent 62%);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: -24%;
+    left: -6%;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(191,91,50,0.12), transparent 62%);
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.35fr 0.9fr;
+    gap: 28px;
+    align-items: end;
+  }
+
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    background: rgba(13,107,95,0.09);
+    border: 1px solid rgba(13,107,95,0.14);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.7rem, 5vw, 5.2rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    max-width: 12ch;
+  }
+
+  .hero-sub {
+    margin: 18px 0 0;
+    max-width: 58ch;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+  }
+
+  .hero-side {
+    display: grid;
+    gap: 14px;
+  }
+
+  .panel {
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--line);
+    background: var(--paper);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 14px 30px rgba(43,31,18,0.08);
+  }
+
+  .summary-card {
+    padding: 22px;
+  }
+
+  .summary-card h2,
+  .side-label {
+    margin: 0 0 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .summary-card p {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+
+  .summary-card strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .metric {
+    padding: 18px;
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--line);
+  }
+
+  .metric .num {
+    display: block;
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .metric .label {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .deck {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 28px;
+    align-items: start;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 16px;
+    display: grid;
+    gap: 16px;
+  }
+
+  .sidebar .panel {
+    padding: 18px;
+  }
+
+  .sidebar h3,
+  .content-head h2,
+  .feedback-area h2 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .toc {
+    display: grid;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .toc a {
+    text-decoration: none;
+    color: var(--ink);
+    padding: 10px 12px;
+    border-radius: 12px;
+    transition: background .18s ease, color .18s ease, transform .18s ease;
+    font-size: 14px;
+  }
+
+  .toc a:hover,
+  .toc a.active {
+    background: rgba(13,107,95,0.08);
+    color: var(--accent);
+    transform: translateX(2px);
+  }
+
+  .quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .legend {
+    display: grid;
+    gap: 10px;
+  }
+
+  .legend-item {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 10px;
+    align-items: start;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-top: 3px;
+  }
+
+  .dot.green { background: var(--accent); }
+  .dot.orange { background: var(--accent-2); }
+  .dot.gold { background: var(--accent-3); }
+
+  .main {
+    display: grid;
+    gap: 22px;
+  }
+
+  .content-head {
+    padding: 20px 22px;
+  }
+
+  .content-head-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 0.9fr;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .content-head p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .section-card {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: start;
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid rgba(31,27,24,0.08);
+  }
+
+  .section-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.78);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .section-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(1.55rem, 2vw, 2.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .section-intro {
+    margin: 10px 0 0;
+    color: var(--muted);
+    max-width: 64ch;
+  }
+
+  .section-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: end;
+  }
+
+  .section-body {
+    display: grid;
+    gap: 18px;
+    padding: 22px 24px 24px;
+  }
+
+  .slide-blocks {
+    display: grid;
+    gap: 14px;
+  }
+
+  .slide {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 16px;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(31,27,24,0.08);
+  }
+
+  .slide-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .slide-content p {
+    margin: 0;
+    font-size: 1.06rem;
+  }
+
+  .bilingual {
+    display: grid;
+    gap: 10px;
+  }
+
+  .quote-en {
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+    line-height: 1.35;
+  }
+
+  .quote-ko {
+    font-size: 1rem;
+    color: var(--muted);
+    padding-left: 14px;
+    border-left: 3px solid rgba(13,107,95,0.2);
+  }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .insight {
+    padding: 18px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(248,244,238,0.82));
+    border: 1px solid rgba(31,27,24,0.08);
+  }
+
+  .insight h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .insight p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  details.review {
+    border: 1px solid rgba(31,27,24,0.09);
+    border-radius: 18px;
+    background: rgba(250,247,242,0.95);
+    overflow: hidden;
+  }
+
+  details.review summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-weight: 700;
+  }
+
+  details.review summary::-webkit-details-marker { display: none; }
+
+  details.review summary span {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .review-body {
+    padding: 0 18px 18px;
+    display: grid;
+    gap: 14px;
+  }
+
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .review-note {
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(31,27,24,0.08);
+    background: rgba(255,255,255,0.78);
+  }
+
+  .review-note strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .review-note p,
+  .review-note ul {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .review-note ul {
+    padding-left: 18px;
+  }
+
+  .reader-notes {
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(13,107,95,0.06);
+    border: 1px dashed rgba(13,107,95,0.2);
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .reader-notes strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--accent);
+  }
+
+  .feedback-area {
+    padding: 24px;
+    margin-top: 8px;
+  }
+
+  .feedback-lead {
+    margin: 0 0 16px;
+    color: var(--muted);
+    max-width: 70ch;
+  }
+
+  .check-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(31,27,24,0.08);
+    background: rgba(255,255,255,0.78);
+  }
+
+  .check-item input {
+    margin-top: 3px;
+    accent-color: var(--accent);
+  }
+
+  .feedback-box {
+    display: grid;
+    gap: 12px;
+  }
+
+  .feedback-box textarea {
+    width: 100%;
+    min-height: 220px;
+    resize: vertical;
+    border-radius: 18px;
+    border: 1px solid rgba(31,27,24,0.12);
+    background: rgba(255,255,255,0.88);
+    padding: 16px;
+    font: inherit;
+    color: var(--ink);
+    line-height: 1.6;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  .feedback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 24px;
+  }
+
+  .collapse-hidden {
+    display: none;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .55s ease, transform .55s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 1080px) {
+    .hero-grid,
+    .deck,
+    .content-head-grid,
+    .review-grid,
+    .insight-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: static;
+    }
+
+    .section-tools {
+      justify-content: start;
+    }
+
+    .metrics,
+    .check-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .wrap {
+      padding: 16px 14px 48px;
+    }
+
+    .hero {
+      padding: 24px;
+      border-radius: 28px;
+    }
+
+    .slide {
+      grid-template-columns: 1fr;
+    }
+
+    .section-header,
+    .section-body,
+    .feedback-area {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .metrics,
+    .check-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .topbar {
+      align-items: stretch;
+    }
+
+    .topbar-left,
+    .topbar-right {
+      width: 100%;
+    }
+
+    .button,
+    button {
+      width: auto;
+    }
+  }
+</style>
+<meta property="og:type" content="article">
+<meta property="og:title" content="ysda-doc-test">
+<meta property="og:description" content="YSDAWAY. Include Myself. By 2030, I am healthy, free, and creatively alive. 나는 건강하고 자유롭게, 내가 원하는 곳에서, 내가 원하는 시간에, 내가 원하는 일을 하며 살아간다. I create because creation brings me back to mys">
+<meta property="og:url" content="https://simpsonys.github.io/YSDAdoc/marktl/s/1o49vpk/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ysda-doc-test">
+<meta name="twitter:description" content="YSDAWAY. Include Myself. By 2030, I am healthy, free, and creatively alive. 나는 건강하고 자유롭게, 내가 원하는 곳에서, 내가 원하는 시간에, 내가 원하는 일을 하며 살아간다. I create because creation brings me back to mys">
+<link rel="canonical" href="https://simpsonys.github.io/YSDAdoc/marktl/s/1o49vpk/">
+</head>
+<body>
+<div class="page-shell">
+  <div class="wrap">
+    <div class="topbar reveal">
+      <div class="topbar-left">
+        <div class="chip">Interactive Explainer</div>
+        <div class="chip">Review Room Mode</div>
+        <div class="chip">Standalone HTML</div>
+      </div>
+      <div class="topbar-right">
+        <button class="button" data-copy-target="#fullOutline">Copy Outline</button>
+        <button class="button" data-copy-target="#executiveSummary">Copy Summary</button>
+        <button class="button primary" id="expandAll">Open Review Panels</button>
+      </div>
+    </div>
+
+    <header class="hero reveal">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">YSDAWAY / Vision Review / Include Myself</div>
+          <h1>Not a race, but my journey.</h1>
+          <p class="hero-sub" id="executiveSummary">
+            This note reads as a personal operating manifesto for 2030: a shift from exhaustion to chosen contribution, from dependence to freedom, and from self-erasure to deliberate self-inclusion. The core tension is not ambition versus care, but whether ambition can be rebuilt around health, presence, and sovereignty.
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="panel summary-card">
+            <h2>Review Lens</h2>
+            <p>
+              Review this as both a <strong>life direction statement</strong> and a <strong>decision filter</strong>.
+              The strongest passages clarify identity, boundaries, and long-term health.
+              The main review question is whether the document is concrete enough to guide choices without losing its emotional force.
+            </p>
+          </div>
+          <div class="metrics">
+            <div class="metric panel">
+              <span class="num">5</span>
+              <span class="label">Core pillars: health, freedom, creation, influence, sovereignty</span>
+            </div>
+            <div class="metric panel">
+              <span class="num">2030</span>
+              <span class="label">Time horizon anchoring the promise to self</span>
+            </div>
+            <div class="metric panel">
+              <span class="num">2</span>
+              <span class="label">Languages shaping the cadence and emphasis</span>
+            </div>
+            <div class="metric panel">
+              <span class="num">1</span>
+              <span class="label">Central correction: include myself in my own care</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="deck">
+      <aside class="sidebar reveal">
+        <section class="panel">
+          <h3>Contents</h3>
+          <nav class="toc" id="toc"></nav>
+        </section>
+
+        <section class="panel">
+          <h3>Quick Review Actions</h3>
+          <div class="quick-actions">
+            <button class="button" data-copy-target="#reviewPrompt">Copy AI Review Prompt</button>
+            <button class="button" data-copy-target="#findingsList">Copy Findings</button>
+            <button class="button warm" data-copy-target="#feedbackDraft">Copy Feedback Draft</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>How To Read</h3>
+          <div class="legend">
+            <div class="legend-item">
+              <span class="dot green"></span>
+              <div><strong>Finding</strong><br>What is already strong and clear.</div>
+            </div>
+            <div class="legend-item">
+              <span class="dot orange"></span>
+              <div><strong>Open Question</strong><br>What needs definition to become actionable.</div>
+            </div>
+            <div class="legend-item">
+              <span class="dot gold"></span>
+              <div><strong>Reader Note</strong><br>What a reviewer may want to mark or reflect back.</div>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section class="panel content-head reveal">
+          <div class="content-head-grid">
+            <div>
+              <h2>Presentation Summary</h2>
+              <p>
+                The note has strong emotional authority and a coherent philosophical spine. It feels most premium when treated as a sequence of carefully paced declarations: identity, work, health, freedom, family, boundaries, and final choice.
+              </p>
+            </div>
+            <div>
+              <div class="reader-notes">
+                <strong>Review focus</strong>
+                Ask whether this document should remain a manifesto, or whether it now deserves one more layer: operating principles that can be checked monthly and defended during periods of stress.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel section-card reveal" id="section-identity" data-title="Identity & Direction">
+          <div class="section-header">
+            <div>
+              <div class="section-meta">
+                <span class="meta-pill">01</span>
+                <span class="meta-pill">Identity</span>
+                <span class="meta-pill">Direction</span>
+              </div>
+              <h2 class="section-title">The future self is named before it is engineered.</h2>
+              <p class="section-intro">
+                The opening establishes a target state, then reaffirms it in Korean with a more embodied cadence. This section gives the document its emotional authority and sets the tone for every later claim.
+              </p>
+            </div>
+            <div class="section-tools">
+              <button class="button" data-copy-target="#section-identity-text">Copy Section</button>
+              <button class="button section-toggle" data-target="#section-identity-body">Collapse Section</button>
+            </div>
+          </div>
+          <div class="section-body" id="section-identity-body">
+            <div class="slide-blocks" id="section-identity-text">
+              <article class="slide">
+                <div class="slide-label">Anchor</div>
+                <div class="slide-content bilingual">
+                  <div class="quote-en">“By 2030, I am healthy, free, and creatively alive.”</div>
+                  <div class="quote-ko">나는 건강하고 자유롭게, 내가 원하는 곳에서, 내가 원하는 시간에, 내가 원하는 일을 하며 살아간다.</div>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Interpretation</div>
+                <div class="slide-content">
+                  <p>
+                    This is not a productivity goal. It is a sovereignty statement. “Healthy,” “free,” and “creatively alive” are not parallel aspirations here; they operate like minimum conditions for a life that feels fully inhabited.
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            <div class="insight-grid">
+              <div class="insight">
+                <h4>Finding</h4>
+                <p>The opening is memorable, portable, and emotionally legible. It works as a title, a mantra, and a test.</p>
+              </div>
+              <div class="insight">
+                <h4>Risk</h4>
+                <p>The phrase “free” is powerful but broad. In later sections it gains meaning, but here it still needs operational edges.</p>
+              </div>
+              <div class="insight">
+                <h4>Opportunity</h4>
+                <p>The bilingual rhythm can be treated as a formal design feature: English for thesis, Korean for embodiment and conviction.</p>
+              </div>
+            </div>
+
+            <details class="review" open>
+              <summary>Section Review Prompt <span>What should a reviewer test here?</span></summary>
+              <div class="review-body">
+                <div class="review-grid">
+                  <div class="review-note">
+                    <strong>Finding</strong>
+                    <p>This section successfully names the desired identity before listing tactics or obligations.</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Open Question</strong>
+                    <p>Does “creatively alive” need one concrete picture so it can survive high-pressure seasons?</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Reader Note</strong>
+                    <p>Mark whether the opening feels inspiring enough to revisit, not just accurate enough to agree with.</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel section-card reveal" id="section-creation" data-title="Creation & Work">
+          <div class="section-header">
+            <div>
+              <div class="section-meta">
+                <span class="meta-pill">02</span>
+                <span class="meta-pill">Creation</span>
+                <span class="meta-pill">Work</span>
+              </div>
+              <h2 class="section-title">Work is reclaimed as expression, not depletion.</h2>
+              <p class="section-intro">
+                This section shifts the note from aspiration into authorship. It names making as the place where identity returns, while also placing a boundary between value creation and self-consumption.
+              </p>
+            </div>
+            <div class="section-tools">
+              <button class="button" data-copy-target="#section-creation-text">Copy Section</button>
+              <button class="button section-toggle" data-target="#section-creation-body">Collapse Section</button>
+            </div>
+          </div>
+          <div class="section-body" id="section-creation-body">
+            <div class="slide-blocks" id="section-creation-text">
+              <article class="slide">
+                <div class="slide-label">Core Claim</div>
+                <div class="slide-content bilingual">
+                  <div class="quote-en">“I create because creation brings me back to myself.”</div>
+                  <div class="quote-ko">나는 무언가를 만들 때 가장 나답다.</div>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Expansion</div>
+                <div class="slide-content">
+                  <p>
+                    Software, writing, education, tools, stories: the list is broad on purpose. The note resists premature narrowing and instead defines a deeper continuity, which is that the work carries mind, experience, and care.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Boundary</div>
+                <div class="slide-content">
+                  <p>
+                    “My work gives value to others, but it no longer consumes me.” This is one of the clearest anti-burnout corrections in the entire document. It reframes contribution as chosen strength rather than enforced sacrifice.
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            <details class="review">
+              <summary>Section Review Prompt <span>Review the work philosophy and pressure boundaries</span></summary>
+              <div class="review-body">
+                <div class="review-grid">
+                  <div class="review-note">
+                    <strong>Finding</strong>
+                    <p>The note convincingly separates meaningful work from self-erasing overwork.</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Open Question</strong>
+                    <ul>
+                      <li>What kinds of creation are non-negotiable?</li>
+                      <li>What work patterns would count as “consuming me” again?</li>
+                    </ul>
+                  </div>
+                  <div class="review-note">
+                    <strong>Reader Note</strong>
+                    <p>This section may be strong enough to become a standalone career principle or homepage statement.</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel section-card reveal" id="section-health" data-title="Health As Foundation">
+          <div class="section-header">
+            <div>
+              <div class="section-meta">
+                <span class="meta-pill">03</span>
+                <span class="meta-pill">Health</span>
+                <span class="meta-pill">Foundation</span>
+              </div>
+              <h2 class="section-title">Health is not support material. It is the structural base.</h2>
+              <p class="section-intro">
+                The emotional center of gravity deepens here. Health is described in physical, practical, and relational terms, and the fear of repeating an old pattern makes the section feel earned rather than abstract.
+              </p>
+            </div>
+            <div class="section-tools">
+              <button class="button" data-copy-target="#section-health-text">Copy Section</button>
+              <button class="button section-toggle" data-target="#section-health-body">Collapse Section</button>
+            </div>
+          </div>
+          <div class="section-body" id="section-health-body">
+            <div class="slide-blocks" id="section-health-text">
+              <article class="slide">
+                <div class="slide-label">Foundation</div>
+                <div class="slide-content">
+                  <p>
+                    “My health is the foundation of everything.” This line is direct, and the next sentence proves it through specifics: body, sleep, blood pressure, metabolism, peace of mind.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Consequence</div>
+                <div class="slide-content">
+                  <p>
+                    The statement about not leaving pain behind for loved ones turns health from self-maintenance into responsibility with boundaries. It avoids vanity and centers stewardship.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Identity</div>
+                <div class="slide-content bilingual">
+                  <div class="quote-en">“I create with strength, not exhaustion.”</div>
+                  <div class="quote-ko">나는 건강하게 오래 곁에 남는 사람이 된다.</div>
+                </div>
+              </article>
+            </div>
+
+            <details class="review">
+              <summary>Section Review Prompt <span>Check for credibility, clarity, and future accountability</span></summary>
+              <div class="review-body">
+                <div class="review-grid">
+                  <div class="review-note">
+                    <strong>Finding</strong>
+                    <p>This is one of the strongest and most credible sections because it names concrete health dimensions, not just ideals.</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Open Question</strong>
+                    <p>Would this become more durable if it named 2 to 4 measurable health commitments that define “protected” health?</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Reader Note</strong>
+                    <p>If any line should shape calendar design, work limits, and travel decisions, it is this section.</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel section-card reveal" id="section-freedom" data-title="Freedom & Financial Sovereignty">
+          <div class="section-header">
+            <div>
+              <div class="section-meta">
+                <span class="meta-pill">04</span>
+                <span class="meta-pill">Freedom</span>
+                <span class="meta-pill">Sovereignty</span>
+              </div>
+              <h2 class="section-title">Freedom becomes believable when identity and money are uncoupled.</h2>
+              <p class="section-intro">
+                This section moves from emotional language into strategic posture. Company, role, country, schedule, and identity are all treated as containers that may exist, but must not become prisons.
+              </p>
+            </div>
+            <div class="section-tools">
+              <button class="button" data-copy-target="#section-freedom-text">Copy Section</button>
+              <button class="button section-toggle" data-target="#section-freedom-body">Collapse Section</button>
+            </div>
+          </div>
+          <div class="section-body" id="section-freedom-body">
+            <div class="slide-blocks" id="section-freedom-text">
+              <article class="slide">
+                <div class="slide-label">Freedom</div>
+                <div class="slide-content">
+                  <p>
+                    “My freedom is real.” The note immediately defines what that means by listing forms of entrapment that are no longer acceptable: one company, one role, one country, one schedule, one identity.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Company</div>
+                <div class="slide-content bilingual">
+                  <div class="quote-en">“My company is a source of income and optionality, not my identity.”</div>
+                  <div class="quote-ko">나는 회사에 소속되어 있을 수는 있지만, 회사에 얽매이지 않는다.</div>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Wealth</div>
+                <div class="slide-content">
+                  <p>
+                    The 50 billion won ambition is framed not as fantasy, but as disciplined long-term execution. The note explicitly rejects luck and centers judgment, patience, and sustainable creation.
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            <details class="review">
+              <summary>Section Review Prompt <span>Review ambition, realism, and decision usefulness</span></summary>
+              <div class="review-body">
+                <div class="review-grid">
+                  <div class="review-note">
+                    <strong>Finding</strong>
+                    <p>The note gives financial ambition moral and strategic context instead of presenting it as status-seeking.</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Open Question</strong>
+                    <ul>
+                      <li>What would count as optionality in practice by 2027 or 2028?</li>
+                      <li>How should “not my identity” shape work choices today?</li>
+                    </ul>
+                  </div>
+                  <div class="review-note">
+                    <strong>Reader Note</strong>
+                    <p>The financial target is bold. A reviewer may want to know whether the number is symbolic, strategic, or specifically modeled.</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel section-card reveal" id="section-family" data-title="Family, Boundaries, Presence">
+          <div class="section-header">
+            <div>
+              <div class="section-meta">
+                <span class="meta-pill">05</span>
+                <span class="meta-pill">Family</span>
+                <span class="meta-pill">Boundaries</span>
+              </div>
+              <h2 class="section-title">Presence replaces sacrifice as the model of care.</h2>
+              <p class="section-intro">
+                The family passages are not only affectionate. They are corrective. They reject the identity of the endlessly responsible father and replace it with a healthier model: steady, bounded, present, and alive.
+              </p>
+            </div>
+            <div class="section-tools">
+              <button class="button" data-copy-target="#section-family-text">Copy Section</button>
+              <button class="button section-toggle" data-target="#section-family-body">Collapse Section</button>
+            </div>
+          </div>
+          <div class="section-body" id="section-family-body">
+            <div class="slide-blocks" id="section-family-text">
+              <article class="slide">
+                <div class="slide-label">Children</div>
+                <div class="slide-content">
+                  <p>
+                    The children do not merely need inheritance or output. They need example, steadiness, and a father who does not disappear into duty. This is one of the note’s clearest redefinitions of love.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Boundaries</div>
+                <div class="slide-content">
+                  <p>
+                    “I am no longer the unlimited guarantor...” is a major threshold line. It does not reject care; it rejects limitlessness. That distinction is psychologically and structurally important.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Correction</div>
+                <div class="slide-content bilingual">
+                  <div class="quote-en">“I can support without surrendering.”</div>
+                  <div class="quote-ko">나는 누구도 버리는 것이 아니다. 나는 내가 베풀어 온 돌봄 안에 나 자신도 포함시킨다.</div>
+                </div>
+              </article>
+            </div>
+
+            <details class="review">
+              <summary>Section Review Prompt <span>Review emotional clarity and boundary integrity</span></summary>
+              <div class="review-body">
+                <div class="review-grid">
+                  <div class="review-note">
+                    <strong>Finding</strong>
+                    <p>This section contains the most mature boundary language in the document. It preserves compassion while rejecting martyrdom.</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Open Question</strong>
+                    <p>What situations still trigger the “unlimited guarantor” pattern, and how will this manifesto interrupt them?</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Reader Note</strong>
+                    <p>The final Korean lines are among the strongest in the note. They may deserve visual emphasis or repetition elsewhere.</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel section-card reveal" id="section-closing" data-title="Closing Cadence & Review Verdict">
+          <div class="section-header">
+            <div>
+              <div class="section-meta">
+                <span class="meta-pill">06</span>
+                <span class="meta-pill">Closing</span>
+                <span class="meta-pill">Verdict</span>
+              </div>
+              <h2 class="section-title">The ending works because it becomes choice, not wish.</h2>
+              <p class="section-intro">
+                The closing sequence strips away passivity. It rejects permission and luck, then lands on a repeated act of choosing. This gives the note a clean final rhythm and a usable voice.
+              </p>
+            </div>
+            <div class="section-tools">
+              <button class="button" data-copy-target="#section-closing-text">Copy Section</button>
+              <button class="button section-toggle" data-target="#section-closing-body">Collapse Section</button>
+            </div>
+          </div>
+          <div class="section-body" id="section-closing-body">
+            <div class="slide-blocks" id="section-closing-text">
+              <article class="slide">
+                <div class="slide-label">Turn</div>
+                <div class="slide-content">
+                  <p>
+                    “I am not waiting for permission. I am not waiting for luck.” This is the hinge where vision becomes agency.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Identity</div>
+                <div class="slide-content">
+                  <p>
+                    “I am becoming the person who can live that life.” The line avoids magical thinking. It names personal development, not just desire.
+                  </p>
+                </div>
+              </article>
+              <article class="slide">
+                <div class="slide-label">Cadence</div>
+                <div class="slide-content">
+                  <p>
+                    The repeated “I choose...” structure gives the note a ceremonial ending without becoming grandiose. “I choose to include myself” is the correct final line because it reframes every earlier promise.
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            <div class="insight-grid" id="findingsList">
+              <div class="insight">
+                <h4>Overall Finding</h4>
+                <p>The manifesto is emotionally coherent, memorable, and strong enough to function as a personal constitution.</p>
+              </div>
+              <div class="insight">
+                <h4>Main Gap</h4>
+                <p>It would benefit from a second layer of operational definitions for health, freedom, and boundaries.</p>
+              </div>
+              <div class="insight">
+                <h4>Editorial Verdict</h4>
+                <p>Keep the lyricism. Add structure around it rather than reducing its emotional intensity.</p>
+              </div>
+            </div>
+
+            <details class="review" open>
+              <summary>Section Review Prompt <span>Confirm final resonance and next-step usefulness</span></summary>
+              <div class="review-body">
+                <div class="review-grid">
+                  <div class="review-note">
+                    <strong>Finding</strong>
+                    <p>The ending lands with conviction and gives the piece a clear emotional signature.</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Open Question</strong>
+                    <p>Should this note remain a manifesto, or should it now spawn a companion page with annual principles and measurable commitments?</p>
+                  </div>
+                  <div class="review-note">
+                    <strong>Reader Note</strong>
+                    <p>If a reviewer remembers only one line, it will likely be “I choose to include myself.” That is the document’s true differentiator.</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel feedback-area reveal" id="feedback-final">
+          <h2>Final Review Step</h2>
+          <p class="feedback-lead">
+            If comments are enabled, this is the natural last step: capture what is strongest, what still feels vague, and what should become a practical principle. Use the checklist to shape your review, then copy the AI-ready feedback block.
+          </p>
+
+          <div class="check-grid">
+            <label class="check-item"><input type="checkbox" checked> <span>The emotional core is clear and memorable.</span></label>
+            <label class="check-item"><input type="checkbox"> <span>The definition of freedom is concrete enough to guide decisions.</span></label>
+            <label class="check-item"><input type="checkbox"> <span>The health commitments feel actionable, not only aspirational.</span></label>
+            <label class="check-item"><input type="checkbox"> <span>The family and boundary sections feel honest and defensible.</span></label>
+            <label class="check-item"><input type="checkbox"> <span>The financial ambition feels grounded in an intentional strategy.</span></label>
+            <label class="check-item"><input type="checkbox"> <span>The note should remain lyrical rather than becoming overly procedural.</span></label>
+          </div>
+
+          <div class="feedback-box">
+            <textarea id="feedbackDraft">Review this manifesto as both writing and operating philosophy.
+
+What is strongest:
+- The document has a coherent center: health, freedom, creation, contribution, and financial sovereignty.
+- The boundary language around work, family, and self-sacrifice is mature and persuasive.
+- “I choose to include myself” is the most important line because it reinterprets the whole piece.
+
+What still needs clarification:
+- Define what “freedom” means in practical terms across work, location, schedule, and identity.
+- Add a few measurable health and boundary commitments so the manifesto can guide behavior under stress.
+- Clarify whether the 50 billion won target is symbolic, strategic, or modeled.
+
+Recommended next step:
+- Keep this note as the emotional constitution.
+- Create a companion page with annual principles, measurable commitments, and “do not cross” boundary rules.
+
+Please help refine this note without flattening its emotional force.</textarea>
+            <div class="feedback-actions">
+              <button class="button primary" data-copy-target="#feedbackDraft">Copy Feedback To AI</button>
+              <button class="button" data-copy-target="#reviewPrompt">Copy Review Prompt</button>
+              <button class="button" id="copyChecked">Copy Checklist Status</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel feedback-area reveal">
+          <h2>AI Review Prompt</h2>
+          <p class="feedback-lead">
+            Use this if you want a second-pass critique focused on clarity, structure, and operational usefulness while preserving tone.
+          </p>
+          <textarea id="reviewPrompt">You are reviewing a bilingual personal manifesto called “YSDAWAY — Include Myself.”
+
+Review goals:
+1. Identify what is emotionally strongest and most memorable.
+2. Identify which ideas are still too abstract to guide real decisions.
+3. Suggest how to preserve the manifesto’s tone while making it more operational.
+4. Pay special attention to health, freedom, work boundaries, family presence, and financial sovereignty.
+5. Do not rewrite it into bland self-help language.
+
+Deliver:
+- Top strengths
+- Top ambiguities
+- Concrete improvement suggestions
+- One possible companion structure for turning the manifesto into a living decision system</textarea>
+        </section>
+
+        <section class="panel feedback-area reveal collapse-hidden">
+          <textarea id="fullOutline">YSDAWAY — Include Myself
+
+1. Identity & Direction
+- By 2030, I am healthy, free, and creatively alive.
+- The note defines a desired state before naming tactics.
+
+2. Creation & Work
+- Creation is the way back to self.
+- Work should create value without consuming the creator.
+
+3. Health As Foundation
+- Health is framed as the basis of everything.
+- Physical wellbeing is linked to responsibility toward loved ones.
+
+4. Freedom & Financial Sovereignty
+- Freedom means not being trapped by company, role, country, schedule, or identity.
+- Wealth is framed as disciplined, long-term, self-authored optionality.
+
+5. Family, Boundaries, Presence
+- Children need a present father, not just output or sacrifice.
+- Care must include boundaries and self-preservation.
+
+6. Closing Cadence & Verdict
+- The note rejects waiting for permission or luck.
+- The final line, “I choose to include myself,” reframes the entire manifesto.</textarea>
+        </section>
+
+        <p class="footer-note reveal">
+          Designed as a local-only standalone review room for reading, reflecting, and copying structured feedback forward.
+        </p>
+      <section class="marktl-reader-feedback" aria-label="Reader feedback">
+<style>
+.marktl-reader-feedback { margin: 40px auto 0; padding: 0; }
+.marktl-reader-feedback h2 { margin: 0 0 8px; font: 800 22px/1.25 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.marktl-reader-feedback p { margin: 0 0 14px; color: #526173; font: 500 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.marktl-reader-feedback .giscus, .marktl-reader-feedback .giscus-frame { width: 100%; }
+</style>
+<h2>Reader feedback</h2>
+<p>Leave a public GitHub comment or reaction below.</p>
+<script src="https://giscus.app/client.js"
+        data-repo="simpsonys/YSDAdoc"
+        data-repo-id="R_kgDOSfCD5A"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOSfCD5M4C9K1A"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="GitHub Dark"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+</script>
+</section>
+</main>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const toc = document.getElementById('toc');
+  const sections = [...document.querySelectorAll('.section-card')];
+
+  sections.forEach(section => {
+    const title = section.dataset.title || section.querySelector('.section-title')?.textContent?.trim() || 'Section';
+    const id = section.id;
+    const a = document.createElement('a');
+    a.href = `#${id}`;
+    a.textContent = title;
+    toc.appendChild(a);
+  });
+
+  document.querySelectorAll('[data-copy-target]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const target = document.querySelector(btn.getAttribute('data-copy-target'));
+      if (!target) return;
+      const text = target.value !== undefined ? target.value : target.innerText.trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => btn.textContent = original, 1200);
+      } catch (_) {
+        btn.textContent = 'Copy failed';
+        setTimeout(() => btn.textContent = 'Copy', 1200);
+      }
+    });
+  });
+
+  document.querySelectorAll('.section-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.querySelector(btn.dataset.target);
+      if (!target) return;
+      const hidden = target.classList.toggle('collapse-hidden');
+      btn.textContent = hidden ? 'Expand Section' : 'Collapse Section';
+    });
+  });
+
+  document.getElementById('expandAll')?.addEventListener('click', () => {
+    document.querySelectorAll('details.review').forEach(d => d.open = true);
+    document.querySelectorAll('.section-body.collapse-hidden').forEach(b => b.classList.remove('collapse-hidden'));
+    document.querySelectorAll('.section-toggle').forEach(b => b.textContent = 'Collapse Section');
+  });
+
+  document.getElementById('copyChecked')?.addEventListener('click', async (e) => {
+    const items = [...document.querySelectorAll('.check-item')].map((label, idx) => {
+      const checked = label.querySelector('input')?.checked ? '[x]' : '[ ]';
+      const text = label.textContent.trim();
+      return `${idx + 1}. ${checked} ${text}`;
+    }).join('\n');
+    try {
+      await navigator.clipboard.writeText(items);
+      const original = e.currentTarget.textContent;
+      e.currentTarget.textContent = 'Checklist Copied';
+      setTimeout(() => e.currentTarget.textContent = original, 1200);
+    } catch (_) {}
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  const tocLinks = [...document.querySelectorAll('.toc a')];
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+      }
+    });
+  }, { rootMargin: '-25% 0px -55% 0px', threshold: 0.1 });
+
+  sections.forEach(section => sectionObserver.observe(section));
+})();
+</script>
+</body>
+</html>
